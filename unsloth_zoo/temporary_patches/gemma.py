@@ -32,12 +32,16 @@ def patch_Gemma3Processor():
         import transformers.models.gemma3.processing_gemma3
     except:
         return
-    from transformers.feature_extraction_utils import BatchFeature
-    from transformers.image_utils import ImageInput, make_nested_list_of_images
-    from transformers.processing_utils import Unpack
-    from transformers.tokenization_utils_base import PreTokenizedInput, TextInput
-    from transformers.models.gemma3.processing_gemma3 import Gemma3ProcessorKwargs
-    from transformers.utils import to_py_obj
+    from transformers.models.gemma3.processing_gemma3 import (
+        ImageInput,
+        PreTokenizedInput,
+        Unpack,
+        Gemma3ProcessorKwargs,
+        make_nested_list_of_images,
+        TextInput,
+        BatchFeature,
+        to_py_obj,
+    )
     def __call__(
         self,
         images: ImageInput = None,
@@ -156,12 +160,13 @@ def patch_Gemma3ForConditionalGeneration():
         import transformers.models.gemma3.modeling_gemma3
     except:
         return
-    from transformers.cache_utils import Cache, HybridCache
     from transformers.models.gemma3.modeling_gemma3 import (
+        HybridCache,
         Gemma3CausalLMOutputWithPast,
         logger,
+        is_torchdynamo_compiling,
+        Cache,
     )
-    from transformers.utils import is_torchdynamo_compiling
     def forward(
         self,
         input_ids: Optional[torch.LongTensor] = None,
@@ -407,7 +412,7 @@ def patch_Gemma3ForConditionalGeneration_causal_mask():
     if os.environ.get("UNSLOTH_FORCE_FLOAT32", "0") == "0": return
     try: import transformers.models.gemma3.modeling_gemma3
     except: return
-    from transformers.cache_utils import (
+    from transformers.models.gemma3.modeling_gemma3 import (
         StaticCache,
         HybridCache,
     )
